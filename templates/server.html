@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div id="details">
+ <div class="wizardBlock">
+  <label for="hostname">Server Name: </label>
+  <input type="text" name="hostname" maxlength="200" />
+  <label for="description" name="description">Description: </label>
+  <textarea name="description">Enter Description here</textarea> <br />
+  <label for="businessunit">Business Unit: </label>
+  <select name="businessunit">
+  {% for bu in values.businessunits %}
+      <option value="{bu.id}">{bu.name}</option>
+  {% endfor %}
+  </select>
+
+  <label for="environment">Environment: </label>
+  <select name="environment">
+  {% for env in values.environments %}
+      <option value="{env.id}">{env.name}</option>
+  {% endfor %}
+  </select>
+
+  <label for="location">Location: </label>
+  <select name="location">
+  {% for location in values.locations %}
+      <option value="{location.id}">{location.name}</option>
+  {% endfor %}
+  </select>
+
+  <label for="operatingsystem">Operating System: </label>
+  <select name="operatingsystem">
+  {% for os in values.operatingsystems %}
+       <option value="os.id}">{os.name}</option>
+  {% endfor %}
+  </select>
+
+ </div>
+
+ <div class="wizardBlock">
+   
+   <label for="available_apps">Available Applications</label>
+   <select class="multi_select" name="available_apps">
+   {% for app in values.applicaitons %}
+      <option value="{app.id}">{app.name}</option>
+   {% endfor %}
+   </select>
+   <input type="button" class="transfer" name=">>" onclick="xfer_select('applications');"/>
+   <input type="button" class="transfer" name="<<" onclick="xfer_select('applications');/>
+   <label for="selected_apps">Selected Applications</label>
+   <select class="multi_select" name="selected_apps">
+   </select>
+   <br />
+
+   <input type="button" class="previous" name="previous" onclick="slide_back(0);" value="Previous" />
+   <input type="button" class="next" name="next" onclick="slide_front(1);" value="Continue" />
+ </div>
+
+<div class="wizardBlock">
+
+   <label class="top" for="available_domains">Available Domains</label>
+   <select class="multi_select" name="available_domains">
+   {% for domain in values.ad_domains %}
+       <option value="{domain.id}">{domain.name}</option>
+   {% endfor %}
+   </select>
+   <input type="button" class="transfer" name=">>" onclick="xfer_select('domains');" />
+   <input type="button class="transfer" name="<<" onclick="xfer_select('domains');" />
+   <label for="selected_domains">Selected Domains</label>
+   <select class="multi_select" name="selected_domains">
+   </select>
+   <br />
+
+   <input type="button" class="previous" name="previous" onclick="slide_back(1);" value="Previous" />
+   <input type="button" class="next" name="next" onclick="slide_front(2);" value="Continue" />
+</div>
+
+<div class="wizardBlock">
+
+   <label class="top" for="available_urls">Available URLs</label>
+   <select class="multi_select" name="available_urls">
+   {% for url in values.urls %}
+       <option value={url.id}">{url.name}</option>
+   {% endfor %}
+   </select>
+   <input type="button" class="transfer" name=">>" onclick="xfer_select('urls');" />
+   <input type="button class="transfer" name="<<" onclick="xfer_select('urls');" />
+   <label for="selected_urls" class="top">Selected URLs</label>
+   <select class="multi_select" name="selected_urls">
+   </select>
+   <br />
+   <input type="button" class="previous" name="previous" onclick="slide_back(2);" value="Previous" />
+   <input type="button" class="next" name="next" onclick="slide_front(3);" value="Continue" />
+</div>
+
+<div class="wizardBlock">
+
+   <label class="top" for="available_types">Available Server Types</label>
+   <select class="multi_select" name="available_types">
+   {% for type in values.types %}
+       <option value={type.id}">{type.name}</option>
+   {% endfor %}
+   </select>
+   <input type="button" class="transfer" name=">>" onclick="xfer_select('types');" />
+   <input type="button class="transfer" name="<<" onclick="xfer_select('types');" />
+   <label for="selected_types" class="top">Selected Types</label>
+   <select class="multi_select" name="selected_types">
+   </select>
+   <br />
+   <input type="button" class="previous" name="previous" onclick="slide_back(3);" value="Previous" />
+   <input type="button" class="next" name="next" onclick="slide_front(4);" value="Continue" />
+</div>
+
+<div class="wizardBlock">
+
+   <table name="addresses">
+   <thead>
+    <tr>
+        <th>IP Address</th>
+	<th>Subnet Mask</th>
+    </tr>
+   <tbody>
+   </tbody>
+   </table>
+
+   <label for="address">IP Address: </label>
+   <input type="text"  name="address" />
+   <label for="subnet">Subnet Mask: </label>
+   <input type="text" name="subnet" />
+   <input type="button" name="addIP" value="Add" onclick="addIP('addresses');" />
+</div>
+
