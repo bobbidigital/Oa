@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}List View {{template.title }} {% endblock %}
+{% block content %}
+
+<div id="listings">
+     <table class="tablesorter">
+           <thead>
+	         <tr>
+		     <th>Name</th>
+		     <th>Description</th>
+		 </tr>
+	   </thead>
+	   <tbody>
+	         {% for rec in records %}
+		 <tr>
+		     <td><a href="/Management/Detail/{{template.type }}/{{rec.id}}">{{rec.name}}</a></td>
+		     <td>{{rec.description}}</td>
+		 </tr>
+		 {% endfor %}
+	   </tbody>
+      </table>
+
+
+     <input type="button" name="modalFadeIn" value="Add" />
+
+     <div id="dialogBox">
+       <form method="POST" action="/Management/Save/{{ template.type }}/">
+	 {% csrf_token %}
+	 <label for="nameField">Name: </label><input type="text" name="nameField" id="nameField" />
+	 <br />
+	 <label for="descField">Description: </label><textarea name="descField" id="descField" class="memo">Enter Descritpion Here</textarea>
+	 <br />
+	 <input type="reset" name="clear" value="Clear" class="button" />
+	 <input type="button" name="close" value="Close" class="button" />
+	 <input type="submit" name="submit" value="Save" class="button" />
+       </form>
+	 <!--<input type="button" name="save" value="Save" class="button" onclick="addDropDownType({{ template.type }});" />-->
+     </div>
+     <div id="mask"></div>
+</div>
+{% endblock %}

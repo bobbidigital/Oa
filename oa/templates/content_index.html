@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}List Management Options {% endblock %}
+{% block content %}
+
+
+<div id="main">
+
+  <ul>
+    {% for template in templates %}
+    <li><a href="Detail/{{ template.id }}">{{template.name}}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

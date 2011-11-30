@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<link rel="stylesheet" href="/resources/style.css" />
+		<title>{% block title %}OA Web Service {% endblock %}</title>
+		<script type="text/javascript" src="/resources/jquery-1.7.min.js"></script>
+		<script type="text/javascript" src="/resources/oa.js"></script>
+	</head>
+	<body>
+	      <div id="header">
+	          {% block header %}
+		  <img src="/images/logo.jpg" /><strong> Oa Server Database</strong>
+		  {% endblock %}
+	      </div>
+	      <div id="sidebar">
+	          {% block sidebar %}
+		  <ul>
+		     <li><a href="/">Home</a></li>
+		     <li><a href="/Servers">Servers</a></li>
+		  </ul>
+		  {% endblock %}
+	      </div>
+	      
+	      <div id="content">
+	            {% block content %} {% endblock %}
+	      </div>
+	      <div id="footer">
+	            {% block footer %} {% endblock %}
+	      </div>
+	 </body>
+</html>
