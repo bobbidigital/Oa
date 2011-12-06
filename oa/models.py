@@ -50,3 +50,7 @@ class Server(models.Model):
     applications = models.ManyToManyField(Application)
     active_directory_domains = models.ManyToManyField(ActiveDirectoryDomain)
     server_types = models.ManyToManyField(ServerType)
+
+class DropDownType(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.CharField(max_length=500)

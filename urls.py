@@ -5,8 +5,11 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-	#url(r'^oa/$', 'oa.views.index'),
-	url(r'^oa/activedirectory/$', 'oa.OaViews.activedirectory.index'),
+	url(r'^$', 'oa.views.index'),
+        url(r'^manage/$', 'oa.OaViews.dropdownmanagement.index'),
+        url(r'^manage/detail/(?P<type>\d{1})/$', 'oa.OaViews.dropdownmanagement.list'),
+        url(r'^manage/save/$', 'oa.OaViews.dropdownmanagement.save'),
+        url(r'^servers/add/$', 'oa.OaViews.servermanagement.add'),
 	url(r'^admin/', include(admin.site.urls)),
     # Examples:
     # url(r'^$', 'Oa.views.home', name='home'),

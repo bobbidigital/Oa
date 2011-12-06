@@ -9,32 +9,40 @@ import datetime
 
 
 
+
 def getDropDownType(type, getObjects=True):
 
     ##Return the correct type of object based on what type of application is being used
     ##They all stem from the same object type so once it's returned the interface is the same
-    
-    if(type == '1'):
+
+    try:
+        dropdown = DropDownType.objects.get(pk=type)
+    except:
+        p = None
+        return p
+   
+    if(dropdown.name == 'Active Directory Domains'):
        p = ActiveDirectoryDomain
 
-    elif(type == '2'):
+    elif(dropdown.name == 'Application'):
         p = Application
 
-    elif(type == '3'):
+    elif(dropdown.name == 'Location'):
         p = Location
 
-    elif(type == '4'):
+    elif(dropdown.name == 'Operating Systems'):
         p = OperatingSystem
 
-    elif(type == '5'):
+    elif(dropdown.name == 'Server Types'):
         p = ServerType
 
-    elif(type == '6'):
+    elif(dropdown.name == 'URLs'):
         p = Urls
 
-    elif(type == '7'):
+    elif(dropdown.name == 'Business Unit'):
         p = BusinessUnit
-    elif(type == '8'):
+
+    elif(dropdown.name == 'Server Environment'):
         p = ServerEnvironment
 
     else:
@@ -43,37 +51,24 @@ def getDropDownType(type, getObjects=True):
     return p
 
 def list(request, type):
-
+    ##To make this function generic, first we figure out what type of model we're working with
     modelObject = getDropDownType(type)
     t = TemplateType()
-    if(type == '1'):
-        t.title = "Active Directory Domains"
-        t.type = type
-    elif(type == '2'):
+    
+    #Now let's get the specifc entry we're looking for the type will always be equal to the ID
+    # of the entry. 
 
-        t.title = "Applications"
-        t.type = type
-    elif(type == '3'):
-        t.title = "Location Management"
-        t.type = type
-    elif(type == '4'):
-        t.title = "Operating Systems"
-        t.type = type
-    elif(type == '5'):
-        t.title = "Server Types"
-        t.type = type
-    elif(type == '6'):
-        t.title = "URLs"
-        t.type = type
-    elif(type == '7'):
-        t.title = "Business Units"
-        t.type = type
-    elif(type == '8'):
-        t.title = "Server Data Center Environment"
-        t.type = type
-    else:
+    try:
+        p = DropDownType.objects.get(pk=type)
+    except:
         raise Http404
+    
+    #Our template object will allow us to use a single template for all of these management
+    #dropdowns. Let's just assign a title and the type
 
+    t.title = p.name
+    t.type = type
+   
     p = modelObject.objects.all()
     l = loader.get_template('content_list.html')
     c = Context({
@@ -92,10 +87,8 @@ def index(request):
             })
     return HttpResponse(l.render(c))
 
-def save(request, type):
-    
-    import pdb
-    pdb.set_trace()
+def save(request):
+    type = request.POST["template"]
     modelObject = getDropDownType(type)
     p = modelObject()
     p.name = request.POST["nameField"]
@@ -110,6 +103,8 @@ def save(request, type):
                 })
             return HttpResponse(l.render(c))
     else:
-        return HttpResponseRedirect('/Management/Detail/%s' % type)
+        return list(request,type)
+        
+        
     
         
