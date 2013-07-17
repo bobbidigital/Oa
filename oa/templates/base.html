@@ -1,31 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<link rel="stylesheet" href="/resources/style.css" />
-		<title>{% block title %}OA Web Service {% endblock %}</title>
-		<script type="text/javascript" src="/resources/jquery-1.7.min.js"></script>
-		<script type="text/javascript" src="/resources/oa.js"></script>
-	</head>
-	<body>
-	      <div id="header">
-	          {% block header %}
-		  <img src="/images/logo.jpg" /><strong> Oa Server Database</strong>
-		  {% endblock %}
-	      </div>
-	      <div id="sidebar">
-	          {% block sidebar %}
-		  <ul>
-		     <li><a href="/">Home</a></li>
-		     <li><a href="/Servers">Servers</a></li>
-		  </ul>
-		  {% endblock %}
-	      </div>
-	      
-	      <div id="content">
-	            {% block content %} {% endblock %}
-	      </div>
-	      <div id="footer">
-	            {% block footer %} {% endblock %}
-	      </div>
-	 </body>
+<!DOCTYPE HTML>
+<html>
+  <head>
+     <title>{% block title %}Bullhorn -- Keeping you informed {% endblock %}</title>
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link href="/static/css/bootstrap.css" rel="stylesheet" media="screen">
+  </head>
+  <body>
+      <div class="navbar navbar-inverse navbar-fixed-top">
+          <div class="navbar-inner">
+              <div class="container">
+                  <a class="brand pull-left" href="#">Project Bullhorn</a>
+		   <div class="nav-collapse collapse">
+		      <ul class="nav">
+			      <li {% if current_page == "home" %}class="active" {% endif %}>
+			      <a href="/">Home</a></li>
+
+			      <li class="dropdown">
+			          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Events <b class="caret"></b></a>
+			          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+			             <li><a href="/event">List Events</a></li>
+			             <li><a href="/event/add">Add Event</a></li>
+			          </ul>
+			      </li>
+			      <li class="dropdown">
+			          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Contacts <b class="caret"></b></a>
+				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropDownMenu">
+			              <li><a href="/contact">List Contacts</a></li>
+				      <li><a href="/contact/add">Add Contact</a></li>
+				  </ul>
+		    	      </li>
+			      <li {% if current_page == "devices" %}class="active" {% endif %}>
+			      <a href="/device">Devices</a></li>
+		      </ul>
+                      <div class="pull-right">
+                      {% if user.logged_in %}
+                          <a href="btn btn-primary">Logout, {{ user.first_name }}</a>
+                      {% else %}
+                          <a class="btn btn-primary" href="/login">Login</a>
+                      {% endif %}
+	      	      </div> <!-- pull-right -->
+                      <form class="navbar-form form-search"> 
+                          <input type="text" class="input-medium search-query">
+                          <button type="submit" class="btn">Search</button>
+                      </form>
+		   </div> <!-- Collapse -->
+	       </div> <!-- Container -->
+           </div> <!--navbar-inner-->
+      </div> <!-- navbar top -->
+      <div class="container">
+           {% block content %}<h3>Main content, Texas</h3>{% endblock %}
+      </div> <!-- Content Container -->
+      </div>
+      <script src="http://code.jquery.com/jquery.js"></script>
+      <script src="/static/js/bootstrap.min.js"></script>
+  </body>
 </html>
+

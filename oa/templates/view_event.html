@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Bullhorn -- {{ event.name }} {% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="row">
+        <div class="span10">
+            <h2>{{ event.name }}</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span2">
+            <strong>When:</strong>
+        </div>
+        <div class="span8">
+            <p>{{ event.event_date }}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span2">
+            <strong>Description:</strong>
+        </div>
+        <div class="span8">
+            <p>{{ event.description }}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span2">
+            <strong>Tags:</strong>
+        </div>
+        <div class="span8">
+            {% for tag in event.tags.all %}
+            <span class="label label-info">{{ tag.name }}</span>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="span2">
+            <strong>Point of Contact::</strong>
+        </div>
+        <div class="span8">
+            {% for contact in event.contacts.all %}
+            <a href="mailto:{{ contact.email }}">
+                <span class="label label-info">
+                    {{ contact.email }}
+                </span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

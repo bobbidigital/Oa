@@ -1,0 +1,22 @@
+<h3>Navigation</h3>
+<ul class="nav nav-list">
+    <li 
+    {% if current_page == "home" %}
+        class="active"
+    {% endif %}><a href="/">Home</a></li>
+    <li class="nav-header">Data Forms</li>
+    <li
+    {% if current_page == "event" %}
+        class="active"
+        {% endif %}><a href="/event">Events</a></li>
+    <li><a href="#">Contacts</a></li>
+    <li><a href="#">Devices</a></li>
+    <li class="nav-header">Tag Types</li>
+    <li 
+    {% if current_page == "add_category" %} 
+        class="active" 
+    {% endif %}><a href="tagtypes/add">Add Tag Type</a></li>
+    {% for category in categories %}
+    <li><a href="/tagtypes/view/{{ category.id }}">{{ category.name }}</a></li>
+    {% endfor %}
+</ul>

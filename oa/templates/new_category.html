@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Bullhorn -- Add New Tags{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="span10">
+        <h1>Create New Tag Type</h1>
+        <p>Use this page to create new tag types. These types will show up in
+        forms for new devices and for metadata categorization</p>
+    </div>
+    <div class="row">
+        <div class="span10">
+            <p>{{ success.message }}</p> 
+            <p>{{ form.non_field_errors }}</p>
+            <form class="form-horizontal" action="/tagtypes/add" method="POST">
+                {% csrf_token %}
+                <div class="control-group">
+                    {{ form.name.errors }}
+                    <label class="control-label" for="inputCategory">Tag Type
+                        Name</label>
+                    <div class="controls">
+                        {{ form.name }}
+                    </div>
+                </div>
+                <div clas="controlgroup">
+                    {{ form.description.errors }}
+                    <label class="control-label"
+                        for="inputDescription">Description </label>
+                    <div class="controls">
+                        {{ form.description }}
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" class="btn">Create Tag Type</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

@@ -1,13 +1,31 @@
 {% extends "base.html" %}
 
+{% block title %}I'm overriding the block title{% endblock %}
+
+
 {% block content %}
-
-<div id="menu">
-  <ul>
-    <li><a href="/manage/">Manage Items</li>
-    <li><a href="/servers/add">Add a new Server</li>
-  </ul>
+<div class="row">
+    <div class="hero-unit">
+        <h1>Hello World</h1>
+        <p>This is going to go be awesome</p>
+        <p><a class="btn btn-primary btn-large">
+            Learn More</a>
+        </p>
+    </div>
+    <div class="row">
+    {% for event in events|slice:":6" %}
+        <div class="span4">
+            <h4>{{ event.name }}</h4>
+            <p>{{ event.short_description }} on {{ event.event_date }}</p>
+            <p><a class="btn" href="/event/view/{{ event.id }}">View Details &raquo;</a></p>
+        </div>
+        {% if forloop.counter == 3 %}
+             </div>
+             <div class="row">
+        {% endif %}
+    {% endfor %}
+    </div>
+    </div>
 </div>
-
 {% endblock %}
 

@@ -1,0 +1,42 @@
+{% extends "base.html" %}                                  
+ 
+{% block title %}Bullhorn -- Event Listings{% endblock %}
+ 
+{% block content %}
+
+<div class="row"> 
+   <div class="pull-right">
+       <p>
+           <a href="/event/add" class="btn btn-primary">Add Event</a>
+       </p>
+   </div> <!-- pull-right -->
+   {% if events %}
+   <ul class="nav nav-tabs nav-stacked">
+       {% for event in events %}
+        <a href="/event/view/{{ event.id }}">
+           <li>
+           <div class="span3">
+               <p><strong>Event: </strong>{{ event.name }}</p>
+           </div> <!-- span -->
+           <div class="span3">
+               <p><strong>Event Date: </strong>{{ event.event_date }}</p>
+           </div>
+           <div class="row">
+               <div class="span3">
+                   <p>{{ event.short_description }}</p>
+               </div>
+               <div class="span3">
+                   {% for tag in event.tags.all %}
+                   <span class="label label-info">{{ tag.name }}</span>
+                   {% endfor %}
+               </div>
+           </div> <!-- row -->
+           </li>
+	</a>
+        {% endfor %}
+   </ul>
+    {% else %}
+    <h3>No events currently scheduled</h3>
+    {% endif %}
+</div> <!-- top row -->
+{% endblock %}

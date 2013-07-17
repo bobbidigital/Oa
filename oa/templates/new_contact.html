@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Bullhorn -- Add New Contact{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="span10">
+        <h1>Create New Contact</h1>
+        <p>Enter new contacts into the system. This will allow people an easy
+        way to contact change managers for events that they care about.
+        Creating a contact on this screen does <strong>not</strong> create a user 
+        account in the system.</p>
+    </div>
+
+    <div class="row">
+        <div class="span10">
+            <p>{{ success.message }}</p>
+            <p>{{ form.non_field_errors }}</p>
+            <form class="form-horizontal" action="/contact/add" method="POST">
+                {% csrf_token %}
+                {%for field in form %}
+                <div class="control-group">
+                    {{ field.errors }}
+                    <label class="control-label" for="{{ field.html_name }}">
+                        {{ field.label }}</label>
+                    <div class="controls">
+                        {{ field }}
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" class="btn">Add Contact</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+     </div>
+  </div>
+</div>
+{% endblock %}

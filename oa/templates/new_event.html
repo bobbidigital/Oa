@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Bullhorn -- Add New Event{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="span10">
+        <h1>Create New Event</h1>
+        <p>Use this to enter a new event into the system. Remember to think of
+        all systems that might be impacted when you're adding your tags</p>
+    </div>
+
+    <div class="row">
+        <div class="span10">
+            <p>{{ success.message }}</p>
+            <p>{{ form.non_field_errors }}</p>
+            <form class="form-horizontal" action="/event/add" method="POST">
+                {% csrf_token%}
+                {% for field in form %}
+                    <div class="control-group">
+                        {{ field.errors }}
+                        <label class="control-label" for="{{ field.html_name }}">
+                            {{ field.label }}</label>
+                        <div class="controls">
+                            {{ field }}
+                         </div>
+                    </div>
+                 {% endfor %}
+                 <div class="control-group">
+                     <div class="controls">
+                         <button type="submit" class="btn">Add Event</button>
+                     </div>
+                 </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
