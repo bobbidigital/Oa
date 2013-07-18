@@ -11,12 +11,32 @@
     </div>
     <div class="row">
         <div class="span10">
-            <p>{{ success.message }}</p> 
+	    {% if success_message %}
+            <div class="alert alert-success">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Nice! </strong>{{ success_message }}
+            </div>
+	    {% endif %}
             <p>{{ form.non_field_errors }}</p>
+	    {% if form.errors %}
+
+            <div class="alert alert-error">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Failed to save!</strong>
+                <ul>
+                {% for field in form %}
+                    {% if field.errors %}
+                    {% for error in field.errors %}
+                        <li>{{ field.name|capfirst }} -- {{ error }}</li>
+                    {% endfor %}
+                    {% endif %}
+                {% endfor %}
+		<ul>
+	    </div>
+	    {% endif %}
             <form class="form-horizontal" action="/tagtypes/add" method="POST">
                 {% csrf_token %}
                 <div class="control-group">
-                    {{ form.name.errors }}
                     <label class="control-label" for="inputCategory">Tag Type
                         Name</label>
                     <div class="controls">
@@ -24,7 +44,6 @@
                     </div>
                 </div>
                 <div clas="controlgroup">
-                    {{ form.description.errors }}
                     <label class="control-label"
                         for="inputDescription">Description </label>
                     <div class="controls">

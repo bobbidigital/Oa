@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     url(r'event/view/(?P<event_id>\d+$)', 'oa.views.view_event'),
     url(r'contact$', 'oa.views.contact'),
     url(r'contact/add$', 'oa.views.add_contact'),
+    url(r'device/add$', 'oa.views.add_device'),
     url(r'^admin/', include(admin.site.urls)),
     # Examples:
     # url(r'^$', 'Oa.views.home', name='home'),

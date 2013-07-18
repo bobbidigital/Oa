@@ -1,7 +1,7 @@
 # Create your views here.
 from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
-from bullhorn.forms import CategoryForm, EventForm, ContactForm
+from bullhorn.forms import CategoryForm, EventForm, ContactForm, NodeForm
 from bullhorn.models import Category, Event, Contact
 from bullhorn.shortcuts import process_form
 import datetime
@@ -73,4 +73,10 @@ def contact(request):
 def add_contact(request):
     template_variables = process_form(request, ContactForm)
     return render_to_response('new_contact.html', template_variables,
+                              context_instance=RequestContext(request))
+
+
+def add_device(request):
+    template_variables = process_form(request, NodeForm)
+    return render_to_response('new_device.html', template_variables,
                               context_instance=RequestContext(request))

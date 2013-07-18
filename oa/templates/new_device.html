@@ -1,23 +1,25 @@
 {% extends "base.html" %}
-{% block title %}Bullhorn -- Add New Event{% endblock %}
+{% block title %}Bullhorn -- Add New Device{% endblock %}
 
 {% block content %}
+
 <div class="row">
     <div class="span10">
-        <h1>Create New Event</h1>
-        <p>Use this to enter a new event into the system. Remember to think of
-        all systems that might be impacted when you're adding your tags</p>
+        <h1>Create New Device</h1>
+        <p>Create a new device to be tracked by the system. You can
+        apply tags to a device to make it easy to find devices and things that
+        people actually care about</p>
     </div>
 
     <div class="row">
         <div class="span10">
-	    {% if success_message %}
-	    <div class="alert alert-success">
+            {% if success_message %}
+            <div class="alert alert-success">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
-		<strong>Nice! </strong>{{ success_message }}
+                <strong>Nice! </strong>{{ success_message }}
             </div>
-	    {% endif %}
-            {% if form.errors %} 
+            {% endif %}
+            {% if form.errors %}
             <div class="alert alert-error">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                 <strong>Failed to save!</strong>
@@ -31,11 +33,11 @@
                 {% endfor %}
                 </ul>
             </div>
-	    {% endif %}
-            <form class="form-horizontal" action="/event/add" method="POST">
-                {% csrf_token%}
-                {% for field in form %}
-                    <div class="control-group">
+            {% endif %}
+           <form class="form-horizontal" action="/device/add" method="POST">
+               {% csrf_token %}
+               {% for field in form %}
+                   <div class="control-group">
                         <label class="control-label" for="{{ field.html_name }}">
                             {{ field.label }}</label>
                         <div class="controls">

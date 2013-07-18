@@ -23,15 +23,15 @@
             <th>Skype Handle/MSN</th>
         </tr>
         {% for contact in contacts %}
-        <tr>
+        <a href="www.google.com"><tr>
             <td>{{ contact.first_name }}</td>
             <td>{{ contact.last_name }}</td>
             <td>{{ contact.email }}</td>
             <td>{{ contact.office }}</td>
             <td>{{ contact.mobile }}</td>
             <td>{{ contact.instant_message }}</td>
-         {% endfor %}
-        </tr>
+        </tr></a>
+       {% endfor %}
     </table>
     {% else %}
     <p>

@@ -1,11 +1,17 @@
 from django.test import TestCase
 from bullhorn.forms import NodeForm, EventForm
-from bullhorn.models import Category, Contact, Event, Metadata
+from bullhorn.models import Category, Contact, Event, Metadata, Tag
+from bullhorn.utils import normalize_string
 
 
 class NodeFormTest(TestCase):
 
     categories = ['Applications', 'Business Units', 'Locations']
+    form_values = {'name': 'WKLEGAFJWEBFP01',
+                   'description': 'Node for the AFJ Web Server',
+                   'applications': 'web server,AFJ,apache',
+                   'business_units': 'TAA',
+                   'locations': 'ptc-k,front end'}
 
     def setUp(self):
         for category in self.categories:
@@ -21,6 +27,18 @@ class NodeFormTest(TestCase):
         form = NodeForm(data)
         self.assertTrue(form.is_valid())
         self.assertEqual(form.cleaned_data['business_units'], value_string)
+
+    def test_tag_save(self):
+        form = NodeForm(self.form_values)
+        self.assertTrue(form.is_valid())
+        form.save()
+        tags = Tag.objects.all()
+        for tag in tags:
+            expected_values = self.form_values[normalize_string(
+                tag.category.name)]
+            expected_values = [normalize_string(
+                x) for x in expected_values.split(",")]
+            self.assertTrue(tag.metadata.name in expected_values)
 
 
 class EventFormTest(TestCase):

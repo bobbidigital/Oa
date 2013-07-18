@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm, Textarea
-from bullhorn.models import Category, Event, Metadata, Contact
-from bullhorn.utils import normalize
+from bullhorn.models import Category, Event, Metadata, Contact, Tag, Node
+from bullhorn.utils import normalize_string, get_metadata
 
 
 class NodeForm(forms.Form):
@@ -13,13 +13,28 @@ class NodeForm(forms.Form):
         super(NodeForm, self).__init__(*args, **kwargs)
         categories = Category.objects.all()
         for category in categories:
-            name = self.normalize_string(category.name)
+            name = normalize_string(category.name)
             self.fields[name] = forms.CharField(max_length=500,
                                                 label=category.name,
                                                 required=False)
 
-    def normalize_string(self, text):
-        return text.replace(" ", "_").lower()
+    def save(self):
+        categories = Category.objects.all()
+        tags = []
+        for category in categories:
+            values = self.cleaned_data[normalize_string(category.name)]
+            metadata_values = get_metadata(values)
+            for metadata in metadata_values:
+                metadata_object = Metadata.objects.get_or_create(
+                    name=normalize_string(metadata))
+                tag = Tag.objects.get_or_create(metadata=metadata_object[0],
+                                                category=category)
+                tags.append(tag[0])
+        node = Node()
+        node.name = self.cleaned_data['name']
+        node.description = self.cleaned_data['description']
+        node.save()
+        node.tags.add(*tags)
 
 
 class CategoryForm(ModelForm):
@@ -53,7 +68,7 @@ class EventForm(forms.Form):
         tag_db_objects = []
         contact_db_objects = []
         for tag in tags:
-            tag = normalize(tag)
+            tag = normalize_string(tag)
             result = Metadata.objects.get_or_create(name=tag)
             tag_db_objects.append(result[0])
         for contact in contacts:

@@ -9,7 +9,9 @@ def process_form(request, form_type):
             form.save()
             empty_form = form_type()
             template_variables = {'form': empty_form,
-                                  'categories': categories}
+                                  'categories': categories,
+                                  'success_message':
+                                  'Record successfully created'}
         else:
             template_variables = {'form': form,
                                   'categories': categories}
