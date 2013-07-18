@@ -7,7 +7,10 @@
 <div class="row">
     <div class="hero-unit">
 	{% for event in events|slice:":1" %}
-	<h1>{{ event.name }}</h1>
+	<h1>Next Scheduled Change</h1>
+	<strong>{{ event.event_date }}</strong>
+	<hr />
+	<h3>{{ event.name }}</h3>
 	<p>{{ event.short_description }} on {{ event.event_date }}</p>
 	<p><a href="/event/view/{{ event.id }}" class="btn btn-primary btn-large">
             View Details &raquo;</a>
