@@ -8,6 +8,7 @@
             <h2>{{ event.name }}</h2>
         </div>
     </div>
+    <hr />
     <div class="row">
         <div class="span2">
             <strong>When:</strong>
@@ -44,7 +45,7 @@
     </div>
     <div class="row">
         <div class="span2">
-            <strong>Point of Contact::</strong>
+            <strong>Point of Contact:</strong>
         </div>
         <div class="span8">
             {% for contact in event.contacts.all %}

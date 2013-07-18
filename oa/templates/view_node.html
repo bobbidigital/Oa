@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Bullhorn -- {{ node.name }}{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="row">
+        <h1>{{ node.name }}</h1>
+        <p>{{ node.description }}</p>
+    </div>
+    <hr />
+    <div class="row">
+    <table class="table table-striped">
+        <tr>
+            <th>Tag Type</th>
+            <th>Tags</th>
+        </tr>
+    {% for category in categories %}
+        <tr>
+            <td>{{ category.name }}</td>
+        <td>
+        {% for tag in node.tags.all %}
+        {% if tag.category.name == category.name %}
+            <span class="label label-info">{{ tag.metadata.name }}</span>
+        {% endif %}
+        {% endfor %}
+        </td>
+        </tr>
+    {% endfor %}
+    </table>
+    <div class="row">
+        <div class="span8">
+            <a href="/device/edit{{ node.id }}" class="btn pull-right">Edit</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+            
+     

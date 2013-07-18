@@ -86,6 +86,14 @@ def add_node(request):
                               context_instance=RequestContext(request))
 
 
+def view_node(request, node_id):
+    node = get_object_or_404(Node, pk=node_id)
+    categories = Category.objects.all()
+    template_variables = {'categories': categories, 'node': node}
+    return render_to_response('view_node.html', template_variables,
+                              context_instance=RequestContext(request))
+
+
 def tagtype(request, category_id):
     category = get_object_or_404(Category, pk=category_id)
     categories = Category.objects.all()
