@@ -4,37 +4,42 @@
  
 {% block content %}
 
+<div class="row">
+   <h3>Scheduled Events</h3>
+   <p>This is a list of all events that are currently scheduled. Events are organizaed by date. 
+   Click the event name to see more details for the event. Click the tag name label to see more
+   details about that particular tag.</p>
+</div>
+<hr />
 <div class="row"> 
-   <div class="pull-right">
-       <p>
-           <a href="/event/add" class="btn btn-primary">Add Event</a>
-       </p>
-   </div> <!-- pull-right -->
    {% if events %}
-   <ul class="nav nav-tabs nav-stacked">
+   <table class="table table-striped">
+       <tr>
+	   <th>Event Name</th>
+	   <th>Event Date</th>
+	   <th>Short Description</th>
+	   <th>Tags</th>
+       </tr>
        {% for event in events %}
-        <a href="/event/view/{{ event.id }}">
-           <li>
-           <div class="span3">
-               <p><strong>Event: </strong>{{ event.name }}</p>
-           </div> <!-- span -->
-           <div class="span3">
-               <p><strong>Event Date: </strong>{{ event.event_date }}</p>
-           </div>
-           <div class="row">
-               <div class="span3">
-                   <p>{{ event.short_description }}</p>
-               </div>
-               <div class="span3">
-                   {% for tag in event.tags.all %}
-                   <span class="label label-info">{{ tag.name }}</span>
-                   {% endfor %}
-               </div>
-           </div> <!-- row -->
-           </li>
-	</a>
-        {% endfor %}
-   </ul>
+       <tr>
+	   <td>
+	       <a href="/event/view/{{ event.id }}">
+	           {{ event.name }}
+	       </a>
+	   </td>
+	
+	   <td>{{ event.event_date }}</td>
+	   <td>{{ event.short_description }}</td>
+	   <td>
+	       {% for tag in event.tags.all %}
+	       <a href="/tagtype/view/{{ tag.id }}">
+	           <span class="label label-info">{{ tag.name }}</span>
+       	       </a>
+	       {% endfor %}
+	   </td>
+       </tr>
+       {% endfor %}
+   </table>
     {% else %}
     <h3>No events currently scheduled</h3>
     {% endif %}

@@ -16,8 +16,12 @@ def index(request):
                               context_instance=RequestContext(request))
 
 
-def add_node(request):
-    pass
+def node(request):
+    categories = Category.objects.all()
+    nodes = Node.objects.all().order_by('name')
+    return render_to_response('node.html', {'categories': categories,
+                                            'nodes': nodes},
+                              context_instance=RequestContext(request))
 
 
 def add_tagtype(request):
@@ -44,7 +48,7 @@ def add_tagtype(request):
 def event(request):
     categories = Category.objects.all()
     events = Event.objects.select_related().filter(
-        event_date__gte=datetime.date.today())
+        event_date__gte=datetime.date.today()).order_by('event_date')
     return render_to_response('event.html', {'categories': categories,
                                              'events': events},
                               context_instance=RequestContext(request))
@@ -76,7 +80,7 @@ def add_contact(request):
                               context_instance=RequestContext(request))
 
 
-def add_device(request):
+def add_node(request):
     template_variables = process_form(request, NodeForm)
     return render_to_response('new_device.html', template_variables,
                               context_instance=RequestContext(request))

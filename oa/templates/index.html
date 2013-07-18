@@ -6,14 +6,16 @@
 {% block content %}
 <div class="row">
     <div class="hero-unit">
-        <h1>Hello World</h1>
-        <p>This is going to go be awesome</p>
-        <p><a class="btn btn-primary btn-large">
-            Learn More</a>
+	{% for event in events|slice:":1" %}
+	<h1>{{ event.name }}</h1>
+	<p>{{ event.short_description }} on {{ event.event_date }}</p>
+	<p><a href="/event/view/{{ event.id }}" class="btn btn-primary btn-large">
+            View Details &raquo;</a>
         </p>
+	{% endfor %}
     </div>
     <div class="row">
-    {% for event in events|slice:":6" %}
+    {% for event in events|slice:"1:6" %}
         <div class="span4">
             <h4>{{ event.name }}</h4>
             <p>{{ event.short_description }} on {{ event.event_date }}</p>

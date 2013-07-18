@@ -7,7 +7,9 @@ from bullhorn.utils import normalize_string, get_metadata
 class NodeForm(forms.Form):
 
     name = forms.CharField(max_length=100)
-    description = forms.CharField(max_length=500, required=False)
+    description = forms.CharField(max_length=500, required=False,
+                                  widget=forms.Textarea(attrs={'cols': 90,
+                                                               'rows': 6}))
 
     def __init__(self, *args, **kwargs):
         super(NodeForm, self).__init__(*args, **kwargs)
@@ -16,7 +18,10 @@ class NodeForm(forms.Form):
             name = normalize_string(category.name)
             self.fields[name] = forms.CharField(max_length=500,
                                                 label=category.name,
-                                                required=False)
+                                                required=False,
+                                                widget=forms.TextInput(attrs={
+                                                    'class': 'input-xxlarge'}
+                                                ))
 
     def save(self):
         categories = Category.objects.all()
