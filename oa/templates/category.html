@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Bullhorn -- Tag Types{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <h1>Tag Types</h1>
+    <p>Listing of all the tags that belong to particular tag type as well as 
+    any devices that have that associated tag</p>
+</div>
+
+<div class="row">
+    <h3>{{ category.name }}</h3>
+    {% if tags %} 
+    <div class="span4">
+        <p><strong>Total Number of Tags:</strong></p>
+    </div>
+    <div class="span8">
+        <p>{{ tag_count }}</p>
+    </div>
+</div>
+<div class="row">
+    <div class="span4">
+        <p><strong>Total Number of Devices with Tag Types:</strong></p>
+    </div>
+    <div class="span8">
+        <p>{{ node_count }}</p>
+    </div>
+
+</div>
+<div class="row">
+    <div class="span4">
+        <p><strong>Tags</strong></p>
+    </div>
+    <div class="span8">
+        {% for tag in tags %}
+        <a href="/tag/view/{{ tag.id }}">
+            <span class="label label-info">{{ tag.metadata.name }}</span>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="span4">
+        <p><strong>Devices</strong></p>
+    </div>
+    <div class="span8">
+        {% for node in nodes %}
+        <a href="/device/{{ node.id }}">
+           <span class="label label-info">{{ node.name }}</span>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <h3>No Tag Types Currently Defined"</h3>
+    {% endif %}
+</div>
+{% endblock %}

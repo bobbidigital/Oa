@@ -7,6 +7,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
 	url(r'^$', 'oa.views.index'),
     url(r'tagtypes/add$', 'oa.views.add_tagtype'),
+    url(r'tagtypes/view/(?P<category_id>\d+)$', 'oa.views.tagtype'),
     url(r'event$', 'oa.views.event'),
     url(r'event/add$', 'oa.views.add_event'),
     url(r'event/view/(?P<event_id>\d+$)', 'oa.views.view_event'),

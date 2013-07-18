@@ -2,7 +2,7 @@
 from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
 from bullhorn.forms import CategoryForm, EventForm, ContactForm, NodeForm
-from bullhorn.models import Category, Event, Contact
+from bullhorn.models import Category, Event, Contact, Node, Tag
 from bullhorn.shortcuts import process_form
 import datetime
 
@@ -79,4 +79,16 @@ def add_contact(request):
 def add_device(request):
     template_variables = process_form(request, NodeForm)
     return render_to_response('new_device.html', template_variables,
+                              context_instance=RequestContext(request))
+
+
+def tagtype(request, category_id):
+    category = get_object_or_404(Category, pk=category_id)
+    categories = Category.objects.all()
+    nodes = Node.objects.filter(tags__category=category)
+    tags = Tag.objects.filter(category=category)
+    template_variables = {'categories': categories, 'nodes': nodes,
+                          'node_count': nodes.count(), 'tags': tags,
+                          'tag_count': tags.count(), 'category': category}
+    return render_to_response('category.html', template_variables,
                               context_instance=RequestContext(request))
