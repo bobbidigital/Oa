@@ -1,9 +1,11 @@
 # Create your views here.
 from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
-from bullhorn.forms import CategoryForm, EventForm, ContactForm, NodeForm
+from bullhorn.forms import CategoryForm, EventForm, ContactForm
+from bullhorn.forms import NodeForm, LoginForm
 from bullhorn.models import Category, Event, Contact, Node, Tag
 from bullhorn.shortcuts import process_form
+from django.contrib.auth import authenticate, login, logout
 import datetime
 
 
@@ -99,8 +101,58 @@ def tagtype(request, category_id):
     categories = Category.objects.all()
     nodes = Node.objects.filter(tags__category=category)
     tags = Tag.objects.filter(category=category)
+
+    ##ToDo:
+    ##Ugly hack. Real problem is Event class isn't handling metadat/tags
+    ##correctly
+    metadata = [tag.metadata.name for tag in tags]
+    events = Event.objects.filter(tags__name__in=metadata)
     template_variables = {'categories': categories, 'nodes': nodes,
-                          'node_count': nodes.count(), 'tags': tags,
-                          'tag_count': tags.count(), 'category': category}
+                          'node_count': nodes.count() or 0, 'tags': tags,
+                          'tag_count': tags.count() or 0, 'category': category,
+                          'event_count': events.count() or 0, 'events': events}
     return render_to_response('category.html', template_variables,
                               context_instance=RequestContext(request))
+
+
+def login_view(request):
+    if request.POST:
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user = authenticate(username=form.cleaned_data['username'],
+                                password=form.cleaned_data['password'])
+            template_variables = {}
+            template = ''
+            if not user:
+                template_variables = {'error': 'Username/Password failed',
+                                      'form': LoginForm()}
+                template = 'login.html'
+                return render_to_response(template,
+                                          template_variables,
+                                          context_instance=RequestContext(
+                                              request))
+
+            if not user.is_active:
+                template_variables = {'error': 'Your user account is not active',
+                                      'form': LoginForm()}
+                template = 'login.html'
+            else:
+                login(request, user)
+                ##Todo Refactor out the view logic and have both views call
+                #the same function. Possibly rendering twice here.
+                return index(request)
+        else:
+            template = 'login.html'
+            template_variables = {'error': 'All fields are required',
+                                  'form': form}
+    else:
+        template_variables = {'form': LoginForm()}
+        template = 'login.html'
+
+    return render_to_response(template, template_variables,
+                              context_instance=RequestContext(request))
+
+
+def logout_view(request):
+    logout(request)
+    return index(request)

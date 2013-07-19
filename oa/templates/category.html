@@ -17,6 +17,7 @@
         <tr><td>Total Number of devices in category</td>
             <td>{{ node_count }}</td>
         </tr>
+        <tr><td>Total number of Events</td><td>{{ event_count }}</td></tr>
         <tr><td>Tags</td>
         <td>
         {% for tag in tags %}
@@ -35,6 +36,29 @@
                 {% endfor %}
             </td>
         </tr>
+    </table>
+</div>
+<div class="row">
+    <h3>Events</h3>
+    <p>Events that are connected to this category</p>
+    <table class="table table-striped">
+        <tr>
+            <th>Event Name</th>
+            <th>Event Date</th>
+            <th>Short Description</th>
+        </tr>
+        {% for event in events %}
+        <tr>
+	   <td>
+	       <a href="/event/view/{{ event.id }}">
+	           {{ event.name }}
+	       </a>
+	   </td>
+	   <td>{{ event.event_date }}</td>
+	   <td>{{ event.short_description|linebreaks }}</td>
+	   <td>
+        </tr>
+        {% endfor %}
     </table>
 </div>
 {% endblock %}

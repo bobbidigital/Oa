@@ -99,3 +99,14 @@ class EventForm(forms.Form):
 class ContactForm(ModelForm):
     class Meta:
         model = Contact
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(max_length=50, widget=forms.TextInput(
+        attrs={'class': 'input-block-level',
+               'placeholder': 'Email Address'}))
+
+    password = forms.CharField(max_length=50,
+                               widget=forms.PasswordInput(attrs={
+                               'class': 'input-block-level',
+                               'placeholder': 'Password'}))

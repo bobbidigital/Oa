@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Bullhorn -- Please Login {% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="span5">
+    <form class="form-signin" action="/login" method="POST">
+        {% csrf_token %}
+         <h2 class="form-signin-heading">Please sign in</h2>
+         {% if error %}
+         <div class="alert alert-error">
+             <strong>Login Failure!</strong> {{ error }}
+         </div> 
+         {% endif %}
+         {{ form.username }}
+         {{ form.password }}
+         <button class="btn btn-large btn-primary" type="submit">Sign in</button>
+         <a href="/accountcreate">Create an Account</a>
+     </form>
+     </div>
+</div>
+{% endblock %}
+
+
+
+

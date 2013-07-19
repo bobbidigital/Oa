@@ -16,6 +16,8 @@ urlpatterns = patterns('',
     url(r'device/add$', 'oa.views.add_node'),
     url(r'device$', 'oa.views.node'),
     url(r'device/view/(?P<node_id>\d+$)', 'oa.views.view_node'),
+    url(r'login$', 'oa.views.login_view'),
+    url(r'logout$', 'oa.views.logout_view'),
     url(r'^admin/', include(admin.site.urls)),
     # Examples:
     # url(r'^$', 'Oa.views.home', name='home'),

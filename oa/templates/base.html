@@ -49,8 +49,8 @@
 		 	      </li>
 		      </ul>
                       <div class="pull-right">
-                      {% if user.logged_in %}
-                          <a href="btn btn-primary">Logout, {{ user.first_name }}</a>
+                      {% if  user.is_authenticated %}
+		         <a class="btn btn-primary" href="/logout">Logout, {{ user.first_name }}</a>
                       {% else %}
                           <a class="btn btn-primary" href="/login">Login</a>
                       {% endif %}
