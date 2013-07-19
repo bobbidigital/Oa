@@ -22,7 +22,7 @@
 	    <strong>Short Description:</strong>
 	</div>
 	<div class="span8">
-            <p>{{ event.short_description }}</p>
+            <p>{{ event.short_description|linebreaks }}</p>
 	</div>
     </div>
     <div class="row">
@@ -30,7 +30,7 @@
             <strong>Description:</strong>
         </div>
         <div class="span8">
-            <p>{{ event.description }}</p>
+            <p>{{ event.description|linebreaks }}</p>
         </div>
     </div>
     <div class="row">
@@ -39,7 +39,9 @@
         </div>
         <div class="span8">
             {% for tag in event.tags.all %}
-            <span class="label label-info">{{ tag.name }}</span>
+	    <a href="/tag/view/{{ tag.id }}">
+                <span class="label label-info">{{ tag.name }}</span>
+	    </a>
             {% endfor %}
         </div>
     </div>

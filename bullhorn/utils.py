@@ -1,5 +1,5 @@
 def normalize_string(text):
-    return text.replace(" ", "_").lower()
+    return text.strip().replace(" ", "_").lower()
 
 
 def get_metadata(text):

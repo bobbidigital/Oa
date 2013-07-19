@@ -14,6 +14,9 @@ class UtilsTest(TestCase):
         self.assertEquals(normalize_string(self.normalized_string),
                           self.normalized_string)
 
+        self.assertEquals(self.normalized_string,
+                          normalize_string(" %s" % self.denormalized_string))
+
     def test_get_metadata(self):
         results = get_metadata(self.metadata)
         for meta in self.metadata.split(","):

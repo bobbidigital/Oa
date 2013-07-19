@@ -53,7 +53,7 @@ class Contact(models.Model):
 
 class Event(models.Model):
     name = models.CharField(max_length=200)
-    short_description = models.CharField(max_length=50)
+    short_description = models.CharField(max_length=500)
     description = models.TextField()
     tags = models.ManyToManyField(Metadata, null=True, blank=True)
     contacts = models.ManyToManyField(Contact, null=True, blank=True)

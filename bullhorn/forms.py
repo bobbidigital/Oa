@@ -6,10 +6,10 @@ from bullhorn.utils import normalize_string, get_metadata
 
 class NodeForm(forms.Form):
 
-    name = forms.CharField(max_length=100)
-    description = forms.CharField(max_length=500, required=False,
-                                  widget=forms.Textarea(attrs={'cols': 90,
-                                                               'rows': 6}))
+    name = forms.CharField(max_length=200)
+    description = forms.CharField(required=False,
+                                  widget=forms.Textarea(
+                                      attrs={'class': 'input-xxlarge'}))
 
     def __init__(self, *args, **kwargs):
         super(NodeForm, self).__init__(*args, **kwargs)
@@ -58,13 +58,21 @@ class CategoryForm(ModelForm):
 
 class EventForm(forms.Form):
 
-    name = forms.CharField(max_length=200)
-    short_description = forms.CharField(max_length=50)
-    description = forms.CharField(max_length=500,
-                                  widget=Textarea(
-                                      attrs={'cols': '100'}))
-    tags = forms.CharField(max_length=500)
-    contacts = forms.CharField(max_length=500)
+    name = forms.CharField(max_length=200,
+                           widget=forms.TextInput(
+                           attrs={'class': 'input-xxlarge'}))
+
+    short_description = forms.CharField(max_length=500,
+                                        widget=forms.TextInput(
+                                        attrs={'class': 'input-xxlarge'}))
+    description = forms.CharField(widget=Textarea(
+                                  attrs={'class': 'input-xxlarge'}))
+    tags = forms.CharField(max_length=500,
+                           widget=forms.TextInput(
+                               attrs={'class': 'input-xxlarge'}))
+    contacts = forms.CharField(max_length=500,
+                               widget=forms.TextInput(
+                                   attrs={'class': 'input-xxlarge'}))
     event_date = forms.DateTimeField()
 
     def save(self):
