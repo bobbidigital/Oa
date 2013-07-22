@@ -9,6 +9,11 @@
         </div>
     </div>
     <hr />
+    {% if success_message %}
+    <div class="row">
+        <span class="alert alert-success">{{ success.message }}</span>
+    </div>
+    {% endif %}
     <div class="row">
         <div class="span2">
             <strong>When:</strong>
@@ -35,18 +40,6 @@
     </div>
     <div class="row">
         <div class="span2">
-            <strong>Tags:</strong>
-        </div>
-        <div class="span8">
-            {% for tag in event.tags.all %}
-	    <a href="/tag/view/{{ tag.id }}">
-                <span class="label label-info">{{ tag.name }}</span>
-	    </a>
-            {% endfor %}
-        </div>
-    </div>
-    <div class="row">
-        <div class="span2">
             <strong>Point of Contact:</strong>
         </div>
         <div class="span8">
@@ -59,5 +52,34 @@
             {% endfor %}
         </div>
     </div>
+    <hr />
+    <div class="row">
+        <h3>Event Tags</h3>
+        <table class="table table-striped">
+            <tr>
+                <th>Category</th>
+                <th>Tags</th>
+            </tr>
+            {% for category in categories %}
+            <tr>
+                <td>{{ category.name }}</td>
+                <td>
+                    {% for tag in event.tags.all %}
+                    {% if tag.category.id == category.id %}
+                       <a href="/tagtypes/view/{{ tag.id }}">
+                           <span class="label label-info">
+                               {{ tag.metadata.display_name }}
+                           </span>
+                       </a>
+                    {% endif %}
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+         </table>
+         <div class="span10">
+             <a class="btn pull-right" href="/event/edit/{{ event.id }}">Edit</a>
+         </div>
+     </div>
 </div>
 {% endblock %}

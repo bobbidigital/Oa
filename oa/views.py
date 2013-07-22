@@ -1,10 +1,13 @@
 # Create your views here.
 from django.template import RequestContext
+from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from bullhorn.forms import CategoryForm, EventForm, ContactForm
-from bullhorn.forms import NodeForm, LoginForm
-from bullhorn.models import Category, Event, Contact, Node, Tag
-from bullhorn.shortcuts import process_form
+from bullhorn.forms import NodeForm, LoginForm, AlertForm
+from bullhorn.models import Category, Event, Contact, Node, Tag, Alert
+from bullhorn.shortcuts import process_form, categories_for_forms
+from bullhorn.shortcuts import normalize_string, update_model_from_form
+from bullhorn.shortcuts import contacts_to_string, tags_to_dict
 from django.contrib.auth import authenticate, login, logout
 import datetime
 
@@ -58,12 +61,57 @@ def event(request):
 
 def view_event(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
-    return render_to_response('view_event.html', {'event': event},
+    categories = categories_for_forms(include_device=True)
+    template_variables = {'event': event, 'categories': categories}
+    return render_to_response('view_event.html', template_variables,
+                              context_instance=RequestContext(request))
+
+
+def edit_event(request, event_id):
+    event = get_object_or_404(Event, pk=event_id)
+    redirect = False
+    if request.POST:
+        form = EventForm(request.POST)
+        if form.is_valid():
+            update_model_from_form(event, form)
+            empty_form = EventForm()
+            success_message = "Record successfully updated"
+            template_variables = {'form': empty_form,
+                                  'success_message': success_message,
+                                  'event': event}
+            template = 'view_event.html'
+            redirect = True
+        else:
+            template_variables = {'form': form, 'event': event,
+                                  'update': True}
+            template = 'new_event.html'
+    else:
+        fields = {'name': event.name,
+                  'short_description': event.short_description,
+                  'description': event.description,
+                  'event_date': event.event_date}
+        contacts = event.contacts.all()
+        contact_string = contacts_to_string(contacts)
+        tags = event.tags.all()
+        tags_dict = tags_to_dict(tags)
+        tags_dict = {normalize_string(key): value
+                     for (key, value) in tags_dict.iteritems()}
+        fields.update(tags_dict)
+        fields.update({'contacts': contact_string})
+        form = EventForm(initial=fields)
+        template_variables = {'form': form, 'url': '/event/edit/%s' % event_id,
+                              'update': True}
+        template = 'new_event.html'
+    if redirect:
+        return HttpResponseRedirect("/event/view/%s" % event.id)
+    else:
+        return render_to_response(template, template_variables,
                               context_instance=RequestContext(request))
 
 
 def add_event(request):
     template_variables = process_form(request, EventForm)
+    template_variables['url'] = '/event/add'
     return render_to_response('new_event.html', template_variables,
                               context_instance=RequestContext(request))
 
@@ -133,7 +181,7 @@ def login_view(request):
                                               request))
 
             if not user.is_active:
-                template_variables = {'error': 'Your user account is not active',
+                template_variables = {'error': 'User account is not active',
                                       'form': LoginForm()}
                 template = 'login.html'
             else:
@@ -156,3 +204,23 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return index(request)
+
+
+def add_alert(request):
+    template_variables = process_form(request, AlertForm, request.user)
+    return render_to_response('new_alert.html', template_variables,
+                              context_instance=RequestContext(request))
+
+
+def alert(request, contact_id=None):
+    if not contact_id:
+        contact = get_object_or_404(Contact, user=request.user)
+    else:
+        contact = get_object_or_404(Contact, pk=contact_id)
+
+    alerts = Alert.objects.filter(contact=contact)
+    categories = Category.objects.all()
+    template_variables = {'contact': contact, 'alerts': alerts[0],
+                          'categories': categories}
+    return render_to_response('alert.html', template_variables,
+                              context_instance=RequestContext(request))

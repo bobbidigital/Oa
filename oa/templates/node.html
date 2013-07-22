@@ -30,7 +30,7 @@
             <td>
             {% for tag in node.tags.all %}
             <a href="/tag/view/{{ tag.id  }}">
-                <span class="label label-info">{{ tag.metadata.name }}</span>
+                <span class="label label-info">{{ tag.metadata.display_name }}</span>
             </a>
             {% endfor %}
             </td>

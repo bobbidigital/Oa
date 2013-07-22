@@ -22,7 +22,7 @@
         <td>
         {% for tag in tags %}
         <a href="/tag/view/{{ tag.id }}">
-            <span class="label label-info">{{ tag.metadata.name }}</span>
+            <span class="label label-info">{{ tag.metadata.display_name }}</span>
         </a>
         {% endfor %}
         </tr>

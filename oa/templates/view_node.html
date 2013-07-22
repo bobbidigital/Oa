@@ -21,7 +21,7 @@
         <td>
         {% for tag in node.tags.all %}
         {% if tag.category.name == category.name %}
-            <span class="label label-info">{{ tag.metadata.name }}</span>
+            <span class="label label-info">{{ tag.metadata.display_name }}</span>
         {% endif %}
         {% endfor %}
         </td>
@@ -30,7 +30,7 @@
     </table>
     <div class="row">
         <div class="span8">
-            <a href="/device/edit{{ node.id }}" class="btn pull-right">Edit</a>
+            <a href="/device/edit/{{ node.id }}" class="btn pull-right">Edit</a>
         </div>
     </div>
 </div>

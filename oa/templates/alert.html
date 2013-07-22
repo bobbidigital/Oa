@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Bullhorn -- List Alerts{% endblock %}
+{% block content %}
+
+<div class="row">
+    <h3>Alerts for {{ contact.first_name }} {{ contact.last_name }}</h3>
+    <p>
+    This lists all of the alerts that a particular contact has signed up for.
+    You can only add alerts for your own account</p>
+</div>
+<hr />
+
+<div class="row">
+    <table class="table table-striped">
+        <tr>
+            <th>Alert Category</th>
+            <th>Tags</th>
+        </tr>
+        {% for category in categories %}
+        <tr><td>{{ category.name }}</td>
+            <td>
+        {% for tag in alerts.tags.all %}
+        {% if tag.category.id == category.id %}
+        <a href="/tagtype/view/{{ tag.id }}">
+             <span class="label label-info">
+                {{ tag.metadata.display_name }}
+             </span>
+        </a>
+        {% endif %}
+        {% endfor %}
+             </td>
+        </tr>
+        {% endfor %}
+   </table>
+</div>
+{% endblock %}
+
+
+

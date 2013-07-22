@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Category(models.Model):
@@ -8,6 +9,7 @@ class Category(models.Model):
 
 class Metadata(models.Model):
     name = models.CharField(max_length=200)
+    display_name = models.CharField(max_length=200)
 
 
 class Tag(models.Model):
@@ -49,13 +51,19 @@ class Contact(models.Model):
     office = models.CharField(max_length=10, null=True, blank=True)
     mobile = models.CharField(max_length=10, null=True, blank=True)
     instant_message = models.CharField(max_length=50, blank=True)
+    user = models.ForeignKey(User, blank=True, null=True)
 
 
 class Event(models.Model):
     name = models.CharField(max_length=200)
     short_description = models.CharField(max_length=500)
     description = models.TextField()
-    tags = models.ManyToManyField(Metadata, null=True, blank=True)
+    tags = models.ManyToManyField(Tag, null=True, blank=True)
     contacts = models.ManyToManyField(Contact, null=True, blank=True)
     event_date = models.DateTimeField()
     create_date = models.DateTimeField(auto_now=True)
+
+
+class Alert(models.Model):
+    contact = models.ForeignKey(Contact)
+    tags = models.ManyToManyField(Tag)

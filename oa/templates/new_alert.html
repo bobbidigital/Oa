@@ -1,16 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Bullhorn -- Add New Event{% endblock %}
+{% block title %}Bullhorn -- Add Alert{% endblock %}
 
 {% block content %}
+
 <div class="row">
     <div class="span10">
-        {% if update %}
-        <h3>Update Event</h3>
-        {% else %}
-        <h3>Create New Event</h3>
-        {% endif %}
-        <p>Use this to enter a new event into the system. Remember to think of
-        all systems that might be impacted when you're adding your tags</p>
+        <h3>Create new Alert</h3>
+        <p>Add an alert to the system. Anytime an event is scheduled with any
+        of the supplied tags, you'll receive an email notification</p>
     </div>
 
     <div class="row">
@@ -36,7 +33,7 @@
                 </ul>
             </div>
 	    {% endif %}
-            <form class="form-horizontal" action="{{ url }}" method="POST">
+            <form class="form-horizontal" action="/alert/update" method="POST">
                 {% csrf_token%}
                 {% for field in form %}
                     <div class="control-group">
@@ -49,12 +46,7 @@
                  {% endfor %}
                  <div class="control-group">
                      <div class="controls">
-                         <button type="submit" class="btn">
-                             {% if update %}
-                             Update Event
-                             {% else %}
-                             Add Event
-                             {% endif %}</button>
+                         <button type="submit" class="btn">Add Alert</button>
                      </div>
                  </div>
             </form>
