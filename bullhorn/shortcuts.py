@@ -8,6 +8,15 @@ def contacts_to_string(contacts):
     return ','.join(result)
 
 
+def contact_from_user(user):
+    contact = Contact()
+    contact.first_name = user.first_name
+    contact.last_name = user.last_name
+    contact.email = user.email
+    contact.save()
+    return contact
+
+
 def tags_to_dict(tags):
     tags_dict = {}
     for tag in tags:

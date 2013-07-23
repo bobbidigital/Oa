@@ -134,3 +134,36 @@ class AlertForm(forms.Form):
             alert.contact = contact
             alert.save()
         alert.tags = tags
+
+
+class UserForm(forms.Form):
+
+    first_name = forms.CharField(max_length=50, widget=forms.TextInput(
+        attrs={'class': 'input-block-level',
+               'placeholder': 'First Name'}))
+
+    last_name = forms.CharField(max_length=50, widget=forms.TextInput(
+        attrs={'class': 'input-block-level',
+               'placeholder': 'Last Name'}))
+
+    email = forms.CharField(max_length=50, widget=forms.TextInput(
+        attrs={'class': 'input-block-level',
+               'placeholder': 'Email Address'}))
+
+    password = forms.CharField(max_length=50, widget=forms.PasswordInput(
+        attrs={'class': 'input-block-level',
+               'placeholder': 'Password'}))
+
+    confirm_password = forms.CharField(max_length=50,
+                                       widget=forms.PasswordInput(
+                                       attrs={'class': 'input-block-level',
+                                              'placeholder': 'Confirm Password'}))
+
+    def is_valid(self):
+        valid = super(UserForm, self).is_valid()
+        if valid:
+            valid = self.cleaned_data['password'] == (
+                self.cleaned_data['confirm_password'])
+            if not valid:
+                self.errors['password'] = ['Passwords do not match']
+        return valid

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Bullhorn -- Create new account {% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="span8">
+        <form class="form-signin" action="/accountcreate" method="POST">
+            {% csrf_token %}
+            <h2 class="form-signin-heading">Please provide account details</h2>
+            {% if form.errors %}
+            <div class="alert alert-error">
+                <strong>Error Creating Account {{ contact.email }}</strong> 
+                <ul>
+                {% for field in form %}
+                    {% if field.errors %}
+                    {% for error in field.errors %}
+                        <li>{{ field.name|capfirst }} -- {{ error }}</li>
+                    {% endfor %}
+                    {% endif %}
+                {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            {% if success %}
+            <div class="alert alert-success">
+                <strong>Congrats! We've emailed instructions to 
+                    {{ user.email }} </strong>
+            </div>
+            {% endif %}
+            {{ form.first_name }}
+            {{ form.last_name }}
+            {{ form.email }}
+            {{ form.password }}
+            {{ form.confirm_password }}
+            <button class="btn btn-large btn-primary" type="submit">Create
+                Account</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

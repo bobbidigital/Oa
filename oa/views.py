@@ -2,13 +2,15 @@
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
-from bullhorn.forms import CategoryForm, EventForm, ContactForm
+from bullhorn.forms import CategoryForm, EventForm, ContactForm, UserForm
 from bullhorn.forms import NodeForm, LoginForm, AlertForm
 from bullhorn.models import Category, Event, Contact, Node, Tag, Alert
 from bullhorn.shortcuts import process_form, categories_for_forms
 from bullhorn.shortcuts import normalize_string, update_model_from_form
 from bullhorn.shortcuts import contacts_to_string, tags_to_dict
+from bullhorn.shortcuts import contact_from_user
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 import datetime
 
 
@@ -106,7 +108,7 @@ def edit_event(request, event_id):
         return HttpResponseRedirect("/event/view/%s" % event.id)
     else:
         return render_to_response(template, template_variables,
-                              context_instance=RequestContext(request))
+                                  context_instance=RequestContext(request))
 
 
 def add_event(request):
@@ -186,9 +188,10 @@ def login_view(request):
                 template = 'login.html'
             else:
                 login(request, user)
+                request.session.set_expiry(900)
                 ##Todo Refactor out the view logic and have both views call
                 #the same function. Possibly rendering twice here.
-                return index(request)
+                return HttpResponseRedirect("/")
         else:
             template = 'login.html'
             template_variables = {'error': 'All fields are required',
@@ -203,7 +206,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return index(request)
+    return HttpResponseRedirect("/")
 
 
 def add_alert(request):
@@ -223,4 +226,39 @@ def alert(request, contact_id=None):
     template_variables = {'contact': contact, 'alerts': alerts[0],
                           'categories': categories}
     return render_to_response('alert.html', template_variables,
+                              context_instance=RequestContext(request))
+
+
+def view_tag(request, tag_id):
+    tag = get_object_or_404(Tag, pk=tag_id)
+    template_variables = {}
+    template_variables['tag'] = tag
+    events = Event.objects.filter(tags=tag,
+                                  event_date__gte=datetime.datetime.today()
+                                  ).order_by('event_date')
+    devices = Node.objects.filter(tags=tag)
+    template_variables['events'] = events
+    template_variables['devices'] = devices
+    return render_to_response('view_tags.html', template_variables,
+                              context_instance=RequestContext(request))
+
+
+def create_account(request):
+    if request.POST:
+        form = UserForm(request.POST)
+        if form.is_valid():
+            user = User.objects.create_user(form.cleaned_data['email'],
+                                            form.cleaned_data['email'],
+                                            form.cleaned_data['password'])
+            user.first_name = form.cleaned_data['first_name']
+            user.last_name = form.cleaned_data['last_name']
+            user.save()
+            contact = contact_from_user(user)
+            template_variables = {'form': UserForm(), 'success': True,
+                                  'contact': contact}
+        else:
+            template_variables = {'form': form}
+    else:
+        template_variables = {'form': UserForm()}
+    return render_to_response('accountcreate.html', template_variables,
                               context_instance=RequestContext(request))

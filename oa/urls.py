@@ -22,6 +22,8 @@ urlpatterns = patterns('',
     url(r'alert/update$', 'oa.views.add_alert'),
     url(r'alert$', 'oa.views.alert'),
     url(r'alert/view/(?P<contact_id>)\d+$', 'oa.views.alert'),
+    url(r'tag/view/(?P<tag_id>\d+)$', 'oa.views.view_tag'),
+    url(r'accountcreate$', 'oa.views.create_account'),
     url(r'^admin/', include(admin.site.urls)),
     # Examples:
     # url(r'^$', 'Oa.views.home', name='home'),

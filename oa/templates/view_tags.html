@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Bullhorn -- View Tag {{ tag.metadata.display_name }}
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <h3>Items with {{ tag.metadata.display_name }} tag</h3>
+    <p>This page will list all of the Devices and Events that have a particular
+    tag associated with it.</p>
+</div>
+<hr />
+ 
+
+<div class="row">
+    <h3>Events</h3>
+    <table class="table table-striped">
+        <tr>
+            <th>Event Name</th>
+            <th>Short Description</th>
+            <th>Event Date</th>
+        </tr>
+        {% for event in events %}
+        <tr>
+            <td>
+                <a href="/event/view/{{ event.id }}">
+                    {{ event.name }}
+                </a>
+            </td>
+            <td>{{ event.short_description }}</td>
+            <td>{{ event.event_date }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div class="row">
+    <h3>Devices</h3>
+    <table class="table table-striped">
+        <tr>
+            <th>Device Name</th>
+            <th>Description</th>
+        </tr>
+        {% for device in devices %}
+        <tr>
+            <td>
+                <a href="/device/view/{{ device.id }}">
+                    {{ device.name }}
+                </a>
+            </td>
+            <td>
+                {{ device.description|slice:"100" }}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
+    
+     
+   
+    
+
