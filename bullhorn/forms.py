@@ -24,7 +24,7 @@ class NodeForm(forms.Form):
                                                 label=category.name,
                                                 required=False,
                                                 widget=forms.TextInput(attrs={
-                                                    'class': 'input-xxlarge'}
+                                                    'class': 'tags input-xxlarge'}
                                                 ))
 
     def save(self):
@@ -121,7 +121,7 @@ class AlertForm(forms.Form):
                                                 label=category.name,
                                                 required=False,
                                                 widget=forms.TextInput(attrs={
-                                                    'class': 'input-xxlarge'}
+                                                    'class': 'tags input-xxlarge'}
                                                 ))
 
     def save(self, user):

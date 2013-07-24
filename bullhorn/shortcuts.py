@@ -118,7 +118,7 @@ def categories_as_form_fields(include_device=False):
                                        label=category.name,
                                        required=False,
                                        widget=forms.TextInput(attrs={
-                                           'class': 'input-xxlarge'}
+                                           'class': 'tags input-xxlarge'}
                                        ))
     return fields
 
@@ -141,3 +141,17 @@ def get_tag_fields():
 
 def convert_to_date(dt):
     return datetime.strptime(dt, "%Y-%m-%d %H:%M:%S").date()
+
+
+def get_query_string(request):
+    results = {}
+    try:
+        query_string = request.META['QUERY_STRING']
+        if query_string:
+            parameters = query_string.split("&")
+            for parameter in parameters:
+                key, value = parameter.split("=")
+                results[key] = value
+    except KeyError:
+        pass
+    return results

@@ -24,6 +24,7 @@ urlpatterns = patterns('',
     url(r'alert/view/(?P<contact_id>)\d+$', 'oa.views.alert'),
     url(r'tag/view/(?P<tag_id>\d+)$', 'oa.views.view_tag'),
     url(r'accountcreate$', 'oa.views.create_account'),
+    url(r'^api/get_metadata$', 'oa.api.get_metadata'),
     url(r'^admin/', include(admin.site.urls)),
     # Examples:
     # url(r'^$', 'Oa.views.home', name='home'),

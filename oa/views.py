@@ -4,13 +4,15 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from bullhorn.forms import CategoryForm, EventForm, ContactForm, UserForm
 from bullhorn.forms import NodeForm, LoginForm, AlertForm
-from bullhorn.models import Category, Event, Contact, Node, Tag, Alert
+from bullhorn.models import Category, Event, Contact, Node
+from bullhorn.models import Tag, Alert, Metadata
 from bullhorn.shortcuts import process_form, categories_for_forms
 from bullhorn.shortcuts import normalize_string, update_model_from_form
 from bullhorn.shortcuts import contacts_to_string, tags_to_dict
-from bullhorn.shortcuts import contact_from_user
+from bullhorn.shortcuts import contact_from_user, get_query_string
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 import datetime
 
 
@@ -113,7 +115,9 @@ def edit_event(request, event_id):
 
 def add_event(request):
     template_variables = process_form(request, EventForm)
+    metadata = Metadata.objects.values_list('name', flat=True)
     template_variables['url'] = '/event/add'
+    template_variables['metadata'] = metadata
     return render_to_response('new_event.html', template_variables,
                               context_instance=RequestContext(request))
 
@@ -156,7 +160,8 @@ def tagtype(request, category_id):
     ##Ugly hack. Real problem is Event class isn't handling metadat/tags
     ##correctly
     metadata = [tag.metadata.name for tag in tags]
-    events = Event.objects.filter(tags__name__in=metadata)
+    events = Event.objects.filter(tags__metadata__name__in=metadata
+                                  ).distinct().order_by('event_date')
     template_variables = {'categories': categories, 'nodes': nodes,
                           'node_count': nodes.count() or 0, 'tags': tags,
                           'tag_count': tags.count() or 0, 'category': category,
@@ -166,6 +171,8 @@ def tagtype(request, category_id):
 
 
 def login_view(request):
+
+    query_strings = get_query_string(request)
     if request.POST:
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -191,7 +198,11 @@ def login_view(request):
                 request.session.set_expiry(900)
                 ##Todo Refactor out the view logic and have both views call
                 #the same function. Possibly rendering twice here.
-                return HttpResponseRedirect("/")
+                try:
+                    url = query_strings['next']
+                except KeyError:
+                    url = "/"
+                return HttpResponseRedirect(url)
         else:
             template = 'login.html'
             template_variables = {'error': 'All fields are required',
@@ -209,12 +220,14 @@ def logout_view(request):
     return HttpResponseRedirect("/")
 
 
+@login_required(login_url='/login')
 def add_alert(request):
     template_variables = process_form(request, AlertForm, request.user)
     return render_to_response('new_alert.html', template_variables,
                               context_instance=RequestContext(request))
 
 
+@login_required(login_url='/login')
 def alert(request, contact_id=None):
     if not contact_id:
         contact = get_object_or_404(Contact, user=request.user)
