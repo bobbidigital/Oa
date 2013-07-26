@@ -21,7 +21,7 @@
             <td>
         {% for tag in alerts.tags.all %}
         {% if tag.category.id == category.id %}
-        <a href="/tagtype/view/{{ tag.id }}">
+        <a href="/tag/view/{{ tag.id }}">
              <span class="label label-info">
                 {{ tag.metadata.display_name }}
              </span>

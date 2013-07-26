@@ -2,14 +2,13 @@
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
-from bullhorn.forms import CategoryForm, EventForm, ContactForm, UserForm
-from bullhorn.forms import NodeForm, LoginForm, AlertForm
+from bullhorn.forms import UserForm
+from bullhorn.forms import LoginForm, AlertForm
 from bullhorn.models import Category, Event, Contact, Node
-from bullhorn.models import Tag, Alert, Metadata
+from bullhorn.models import Tag, Alert
 from bullhorn.shortcuts import process_form, categories_for_forms
-from bullhorn.shortcuts import normalize_string, update_model_from_form
-from bullhorn.shortcuts import contacts_to_string, tags_to_dict
-from bullhorn.shortcuts import contact_from_user, get_query_string
+from bullhorn.shortcuts import contact_from_user, get_query_string, edit_form
+from bullhorn.shortcuts import get_page_type_from_url
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -25,128 +24,51 @@ def index(request):
                               context_instance=RequestContext(request))
 
 
-def node(request):
+def model(request):
+    page_type, model = get_page_type_from_url(request.path)
     categories = Category.objects.all()
-    nodes = Node.objects.all().order_by('name')
-    return render_to_response('node.html', {'categories': categories,
-                                            'nodes': nodes},
-                              context_instance=RequestContext(request))
-
-
-def add_tagtype(request):
-    categories = Category.objects.all()
-    if request.POST:
-        form = CategoryForm(request.POST)
-        if form.is_valid() and form.is_unique():
-            form.save()
-            empty_form = CategoryForm()
-            template_variables = {'form': empty_form,
-                                  'success_message': "%s created successfully"
-                                  % form.cleaned_data['name'],
-                                  'categories': categories}
-        else:
-            template_variables = {'form': form, 'categories': categories}
-
+    if model.__name__ == 'Event':
+        model_instances = model.objects.filter(
+            event_date__gte=datetime.date.today()).order_by('event_date')
     else:
-        form = CategoryForm()
-        template_variables = {'form': form, 'categories': categories}
-    return render_to_response('new_category.html', template_variables,
+        model_instances = model.objects.all()
+    template = '%s.html' % page_type
+    return render_to_response(template, {'categories': categories,
+                                         'models': model_instances},
                               context_instance=RequestContext(request))
 
 
-def event(request):
-    categories = Category.objects.all()
-    events = Event.objects.select_related().filter(
-        event_date__gte=datetime.date.today()).order_by('event_date')
-    return render_to_response('event.html', {'categories': categories,
-                                             'events': events},
-                              context_instance=RequestContext(request))
-
-
-def view_event(request, event_id):
-    event = get_object_or_404(Event, pk=event_id)
-    categories = categories_for_forms(include_device=True)
-    template_variables = {'event': event, 'categories': categories}
-    return render_to_response('view_event.html', template_variables,
-                              context_instance=RequestContext(request))
-
-
-def edit_event(request, event_id):
-    event = get_object_or_404(Event, pk=event_id)
-    redirect = False
-    if request.POST:
-        form = EventForm(request.POST)
-        if form.is_valid():
-            update_model_from_form(event, form)
-            empty_form = EventForm()
-            success_message = "Record successfully updated"
-            template_variables = {'form': empty_form,
-                                  'success_message': success_message,
-                                  'event': event}
-            template = 'view_event.html'
-            redirect = True
-        else:
-            template_variables = {'form': form, 'event': event,
-                                  'update': True}
-            template = 'new_event.html'
+def edit_model(request, model_id):
+    page_type, model = get_page_type_from_url(request.path)
+    form = globals()['%sForm' % model.__name__]
+    template = 'new_%s.html' % page_type
+    template_variables = edit_form(request, model, form, model_id)
+    if 'success_message' in template_variables:
+        return HttpResponseRedirect("/%s/view/%s" % (page_type, model_id))
     else:
-        fields = {'name': event.name,
-                  'short_description': event.short_description,
-                  'description': event.description,
-                  'event_date': event.event_date}
-        contacts = event.contacts.all()
-        contact_string = contacts_to_string(contacts)
-        tags = event.tags.all()
-        tags_dict = tags_to_dict(tags)
-        tags_dict = {normalize_string(key): value
-                     for (key, value) in tags_dict.iteritems()}
-        fields.update(tags_dict)
-        fields.update({'contacts': contact_string})
-        form = EventForm(initial=fields)
-        template_variables = {'form': form, 'url': '/event/edit/%s' % event_id,
-                              'update': True}
-        template = 'new_event.html'
-    if redirect:
-        return HttpResponseRedirect("/event/view/%s" % event.id)
-    else:
+        template_variables['url'] = '/%s/edit/%s' % (page_type, model_id)
         return render_to_response(template, template_variables,
                                   context_instance=RequestContext(request))
 
 
-def add_event(request):
-    template_variables = process_form(request, EventForm)
-    metadata = Metadata.objects.values_list('name', flat=True)
-    template_variables['url'] = '/event/add'
-    template_variables['metadata'] = metadata
-    return render_to_response('new_event.html', template_variables,
+def view_model(request, model_id):
+    page_type = get_page_type_from_url(request.path)
+    categories = categories_for_forms(include_device=True)
+    model = page_type[1]
+    model_instance = get_object_or_404(model, pk=model_id)
+    template_variables = {'model': model_instance, 'categories': categories}
+    template = 'view_%s.html' % page_type[0]
+    return render_to_response(template, template_variables,
                               context_instance=RequestContext(request))
 
 
-def contact(request):
-    categories = Category.objects.all()
-    contacts = Contact.objects.all()
-    template_variables = {'categories': categories, 'contacts': contacts}
-    return render_to_response('contact.html', template_variables,
-                              context_instance=RequestContext(request))
-
-
-def add_contact(request):
-    template_variables = process_form(request, ContactForm)
-    return render_to_response('new_contact.html', template_variables,
-                              context_instance=RequestContext(request))
-
-
-def add_node(request):
-    template_variables = process_form(request, NodeForm)
-    return render_to_response('new_device.html', template_variables,
-                              context_instance=RequestContext(request))
-
-
-def view_node(request, node_id):
-    node = get_object_or_404(Node, pk=node_id)
-    categories = Category.objects.all()
-    template_variables = {'categories': categories, 'node': node}
-    return render_to_response('view_node.html', template_variables,
+def add_model(request):
+    page_type, model = get_page_type_from_url(request.path)
+    form_type = globals()['%sForm' % model.__name__]
+    template_variables = process_form(request, form_type)
+    template_variables['url'] = '/%s/add' % page_type
+    template = 'new_%s.html' % page_type
+    return render_to_response(template, template_variables,
                               context_instance=RequestContext(request))
 
 

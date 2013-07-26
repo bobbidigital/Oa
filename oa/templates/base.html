@@ -5,34 +5,14 @@
      <title>{% block title %}Bullhorn -- Keeping you informed {% endblock %}</title>
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <link href="/static/css/bootstrap.css" rel="stylesheet" media="screen">
-      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+     <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
      <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js'></script>
-     <script type="text/javascript" src="/static/js/jquery.tagsinput.js"></script> 
+     <script type="text/javascript" src="/static/js/jquery.tagsinput.js"></script>  -->
      <!--<script type="text/javascript" src="/static/js/bootstrap-tagmanager.js"></script>  -->
      <link rel="stylesheet" type="text/css" href="/static/css/jquery.tagsinput.css" />
      <!-- <link href="/static/css/cerulean.min.css" rel="stylesheet" media="screen"> -->
   </head>
-  <!--<script type="text/javascript">
-	  $(function () {
-			  $(".tags").tagsInput(
-				  { 'height': '10px'})
-			  });
-		  </script> -->
-
   <body>
-     <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js'></script>
-     <script type='text/javascript'>
-		$(document).ready(function () {
-			$(".tags").each(function () 
-				{
-                                $(this).tagsInput(
-                                    {'autocomplete': {{ metadata|jsonify_list|safe }}});
-				});
-			var options = {{ metadata|js_array|safe}};
-			$('input[data-default="add a tag"]').typeahead(
-				{ source: options });
-		});
-      </script>
       <div class="navbar navbar-inverse navbar-fixed-top">
           <div class="navbar-inner">
               <div class="container">
@@ -66,10 +46,10 @@
 			      <li class="dropdown">
 			         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Categories <b class="caret"></b></a>
 				 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-			             <li><a href="/tagtypes/add">Add Tag Type</a></li>
+			             <li><a href="/tagtype/add">Add Tag Type</a></li>
 				     <li class="divider"></li>
 				     {% for category in categories %}
-				     <li><a href="/tagtypes/view/{{ category.id }}">{{ category.name }}</a></li>
+				     <li><a href="/tagtype/view/{{ category.id }}">{{ category.name }}</a></li>
 				     {% endfor %}
 				 </ul>
 		 	      </li>
@@ -105,8 +85,21 @@
               <p class="muted credit">Developed by <a href"mailto:jeff@allthingsdork.com">Jeffery Smith</a></p>
       </div>
 
-      <!--<script src="http://code.jquery.com/jquery.js"></script> -->
-      <script src="/static/js/bootstrap.min.js"></script>
+     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+     <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js'></script>
+     <script type="text/javascript" src="/static/js/jquery.tagsinput.js"></script> 
+     <script src="/static/js/bootstrap.min.js"></script>
+     <script type='text/javascript'>
+	$(document).ready(function () {
+		$(".tags").each(function () 
+			{
+                               $(this).tagsInput();
+			});
+		var options = {{ metadata|js_array|safe}};
+		$('input[data-default="add a tag"]').typeahead(
+			{ source: options });
+	});
+      </script>
   </body>
 </html>
 

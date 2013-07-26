@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Bullhorn -- Add New Tags{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="span10">
+        <h1>Create New Tag Type</h1>
+        <p>Use this page to create new tag types. These types will show up in
+        forms for new devices and for metadata categorization</p>
+    </div>
+    <div class="row">
+        <div class="span10">
+	    {% if success_message %}
+            <div class="alert alert-success">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Nice! </strong>{{ success_message }}
+            </div>
+	    {% endif %}
+            <p>{{ form.non_field_errors }}</p>
+	    {% if form.errors %}
+
+            <div class="alert alert-error">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Failed to save!</strong>
+                <ul>
+                {% for field in form %}
+                    {% if field.errors %}
+                    {% for error in field.errors %}
+                        <li>{{ field.name|capfirst }} -- {{ error }}</li>
+                    {% endfor %}
+                    {% endif %}
+                {% endfor %}
+		<ul>
+	    </div>
+	    {% endif %}
+            <form class="form-horizontal" action="{{ url }}" method="POST">
+                {% csrf_token %}
+                <div class="control-group">
+                    <label class="control-label" for="inputCategory">Tag Type
+                        Name</label>
+                    <div class="controls">
+                        {{ form.name }}
+                    </div>
+                </div>
+                <div clas="controlgroup">
+                    <label class="control-label"
+                        for="inputDescription">Description </label>
+                    <div class="controls">
+                        {{ form.description }}
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" class="btn">Create Tag Type</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

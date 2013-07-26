@@ -7,13 +7,13 @@
     <h3>Contact Listing</h3>
     <p>Contacts help you list people associated with a change. This can be
     useful for people who need more information on a particular change that's
-    going to occur. All registered users are automatically entered as contacts,
-    but not all contacts have user accounts on this system.</p>
+    going to occur. All registered users are automatically entered as models,
+    but not all models have user accounts on this system.</p>
 </div>
 <hr />
 
 <div class="row">
-    {% if contacts %}
+    {% if models %}
     <table class="table table-striped">
         <tr>
             <th>First Name</th>
@@ -23,7 +23,7 @@
             <th>Mobile Phone</th>
             <th>Skype Handle/MSN</th>
         </tr>
-        {% for contact in contacts %}
+        {% for contact in models %}
         <a href="www.google.com"><tr>
             <td>{{ contact.first_name }}</td>
             <td>{{ contact.last_name }}</td>

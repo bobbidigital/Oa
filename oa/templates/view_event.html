@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Bullhorn -- {{ event.name }} {% endblock %}
+{% block title %}Bullhorn -- {{ model.name }} {% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="row">
         <div class="span10">
-            <h2>{{ event.name }}</h2>
+            <h2>{{ model.name }}</h2>
         </div>
     </div>
     <hr />
@@ -19,7 +19,7 @@
             <strong>When:</strong>
         </div>
         <div class="span8">
-            <p>{{ event.event_date }}</p>
+            <p>{{ model.event_date }}</p>
         </div>
     </div>
     <div class="row">
@@ -27,7 +27,7 @@
 	    <strong>Short Description:</strong>
 	</div>
 	<div class="span8">
-            <p>{{ event.short_description|linebreaks }}</p>
+            <p>{{ model.short_description|linebreaks }}</p>
 	</div>
     </div>
     <div class="row">
@@ -35,7 +35,7 @@
             <strong>Description:</strong>
         </div>
         <div class="span8">
-            <p>{{ event.description|linebreaks }}</p>
+            <p>{{ model.description|linebreaks }}</p>
         </div>
     </div>
     <div class="row">
@@ -43,7 +43,7 @@
             <strong>Point of Contact:</strong>
         </div>
         <div class="span8">
-            {% for contact in event.contacts.all %}
+            {% for contact in model.contacts.all %}
             <a href="mailto:{{ contact.email }}">
                 <span class="label label-info">
                     {{ contact.email }}
@@ -64,7 +64,7 @@
             <tr>
                 <td>{{ category.name }}</td>
                 <td>
-                    {% for tag in event.tags.all %}
+                    {% for tag in model.tags.all %}
                     {% if tag.category.id == category.id %}
                        <a href="/tag/view/{{ tag.id }}">
                            <span class="label label-info">
@@ -78,7 +78,7 @@
             {% endfor %}
          </table>
          <div class="span10">
-             <a class="btn pull-right" href="/event/edit/{{ event.id }}">Edit</a>
+             <a class="btn pull-right" href="/event/edit/{{ model.id }}">Edit</a>
          </div>
      </div>
 </div>

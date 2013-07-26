@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Bullhorn -- Tag Types{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <h1>{{ category.name }} Category</h1>
+    <p>Listing of all the tags that belong to particular tag type as well as 
+    any devices that have that associated tag</p>
+</div>
+<hr />
+
+<div class="row">
+    <h3>{{ category.name }}</h3>
+    <table class="table table-striped">
+        <tr><td>Total number of tags</td><td>{{ tag_count }}</td></tr>
+        <tr><td>Total Number of devices in category</td>
+            <td>{{ node_count }}</td>
+        </tr>
+        <tr><td>Total number of Events</td><td>{{ event_count }}</td></tr>
+        <tr><td>Tags</td>
+        <td>
+        {% for tag in tags %}
+        <a href="/tag/view/{{ tag.id }}">
+            <span class="label label-info">{{ tag.metadata.display_name }}</span>
+        </a>
+        {% endfor %}
+        </tr>
+        <tr>
+            <td>Devices</td>
+            <td>
+                {% for node in nodes %}
+                <a href="/device/view/{{ node.id }}">
+                    <span class="label label-info">{{ node.name }}</span>
+                </a>
+                {% endfor %}
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="row">
+    <h3>Events</h3>
+    <p>Events that are connected to this category</p>
+    <table class="table table-striped">
+        <tr>
+            <th>Event Name</th>
+            <th>Event Date</th>
+            <th>Short Description</th>
+        </tr>
+        {% for event in events %}
+        <tr>
+	   <td>
+	       <a href="/event/view/{{ event.id }}">
+	           {{ event.name }}
+	       </a>
+	   </td>
+	   <td>{{ event.event_date }}</td>
+	   <td>{{ event.short_description|linebreaks }}</td>
+	   <td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

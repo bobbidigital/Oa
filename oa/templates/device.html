@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Bullhorn -- Devices{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <h3>Devices</h3>
+    <p>This is a list of devices that have been registered with the system.
+    Each device has an associated number of tags for each category</p>
+</div>
+<hr />
+
+<div class="row">
+    {% if models %}
+    <table class="table table-striped">
+        <tr>
+            <th>Device Name</th>
+            <th>Description</th>
+            <th>Tags</th>
+        </tr>
+        {% for node in models %}
+        <tr>
+            <td>
+                <a href="/device/view/{{ node.id }}">
+                    {{ node.name }}
+                </a>
+             </td>
+            <td>{{ node.description }}</td>
+            <td>
+            {% for tag in node.tags.all %}
+            <a href="/tag/view/{{ tag.id  }}">
+                <span class="label label-info">{{ tag.metadata.display_name }}</span>
+            </a>
+            {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <h3>No Devices Defined</h3>
+    {% endif %}
+</div>
+{% endblock %}
+                
+

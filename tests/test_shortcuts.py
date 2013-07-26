@@ -1,6 +1,9 @@
+from django.test.client import RequestFactory
 from bullhorn.shortcuts import tags_to_dict, update_model_from_form
+from bullhorn.shortcuts import get_query_string, get_model_fields
+from bullhorn.shortcuts import process_form, process_contacts, edit_form
 from django.test import TestCase
-from bullhorn.models import Metadata, Category, Tag, Event
+from bullhorn.models import Metadata, Category, Tag, Event, Contact
 from bullhorn.forms import EventForm
 import datetime
 
@@ -9,6 +12,14 @@ class ShortCutsTest(TestCase):
 
     categories = ['Device', 'Applications', 'Business Units', 'Locations']
     metatags = ['eStore', 'BizTalk', 'Database', 'PTC-K', 'TAA']
+
+    factory = RequestFactory()
+    event_form_data = {'name': 'Test2',
+                       'short_description': 'Test2',
+                       'description': 'Test2',
+                       'event_date': '2009-11-11 00:00:00',
+                       'applications': 'icadmin',
+                       'contacts': 'jeffery.smith@wolterskluwer.com'}
 
     def setUp(self):
         for category in self.categories:
@@ -42,7 +53,6 @@ class ShortCutsTest(TestCase):
         event = Event.objects.create(name='Test1', short_description='Test1',
                                      description='Test1',
                                      event_date=dt.isoformat()
-                                     #event_date='2013-10-11 12:4l:00'
                                      )
         tags = [tag for tag in tags]
         event.tags.add(*tags)
@@ -60,3 +70,55 @@ class ShortCutsTest(TestCase):
         event = update_model_from_form(event, form)
         event = Event.objects.get(pk=event_id)
         self.assertEqual(event.tags.count(), 1)
+
+    def test_get_query_string(self):
+        request = self.factory.get('/login?next=frank.html&value=bob123')
+        query_values = get_query_string(request)
+        self.assertEqual(query_values['next'], 'frank.html')
+        self.assertEqual(query_values['value'], 'bob123')
+        request = self.factory.get('/login')
+        query_values = get_query_string(request)
+        self.assertRaises(KeyError, lambda: query_values['next'])
+
+    def test_edit_form(self):
+        form_data = self.event_form_data
+        form_data['name'] = 'Test Edit Form'
+        event = EventForm(form_data)
+        event.is_valid()
+        event.save()
+        event = Event.objects.get(name='Test Edit Form')
+        form_data['name'] = 'Test Edit Form 2'
+        request = self.factory.post('/event/edit/%s' % event.id, form_data)
+        results = edit_form(request, Event, EventForm, event.id)
+        self.assertTrue('success_message' in results)
+
+    def test_get_model_fields(self):
+        list_of_fields = ('id', 'name', 'short_description', 'description',
+                          'event_date')
+        list_of_many_to_many = ('contacts', 'tags')
+        for event in (Event, Event()):
+            fields = get_model_fields(event)
+            for field in list_of_fields:
+                self.assertTrue(field in fields[0])
+            for field in list_of_many_to_many:
+                self.assertTrue(field in fields[1])
+
+    def test_process_form(self):
+        form_data = self.event_form_data
+        form_data['name'] = 'Test3'
+        request = self.factory.post('/event/add', self.event_form_data)
+        template_variables = process_form(request, EventForm)
+        self.assertEqual(template_variables['success_message'],
+                         'Record successfully created')
+        self.assertEqual(Event.objects.filter(name='Test3').count(), 1)
+
+    def test_process_contacts(self):
+        contacts = ['jeffery.smith@wolterskluwer.com', 'jeff@bx.com',
+                    'my@fry.com']
+        results = process_contacts(contacts)
+        self.assertEqual(len(results), 3)
+        self.assertEqual(Contact.objects.all().count(), 3)
+        results = process_contacts(['jeff@bx.com', 'my@fry.com',
+                                    'v@yahoo.com'])
+        self.assertEqual(len(results), 3)
+        self.assertEqual(Contact.objects.all().count(), 4)

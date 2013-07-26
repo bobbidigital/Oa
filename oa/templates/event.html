@@ -6,13 +6,13 @@
 
 <div class="row">
    <h3>Scheduled Events</h3>
-   <p>This is a list of all events that are currently scheduled. Events are organizaed by date. 
+   <p>This is a list of all models that are currently scheduled. Events are organizaed by date. 
    Click the event name to see more details for the event. Click the tag name label to see more
    details about that particular tag.</p>
 </div>
 <hr />
 <div class="row"> 
-   {% if events %}
+   {% if models %}
    <table class="table table-striped">
        <tr>
 	   <th>Event Name</th>
@@ -20,7 +20,7 @@
 	   <th>Short Description</th>
 	   <th>Tags</th>
        </tr>
-       {% for event in events %}
+       {% for event in models %}
        <tr>
 	   <td>
 	       <a href="/event/view/{{ event.id }}">
@@ -41,7 +41,7 @@
        {% endfor %}
    </table>
     {% else %}
-    <h3>No events currently scheduled</h3>
+    <h3>No Events currently scheduled</h3>
     {% endif %}
 </div> <!-- top row -->
 {% endblock %}
