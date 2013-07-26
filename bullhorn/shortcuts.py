@@ -5,6 +5,12 @@ from django.shortcuts import get_object_or_404
 import re
 
 
+def import_form(name):
+    mod = __import__('bullhorn.forms', fromlist=['forms'])
+    form = getattr(mod, name)
+    return form
+
+
 def get_page_type_from_url(path):
     page_types = {'device': Node, 'event': Event, 'contact': Contact,
                   'tag': Tag, 'tagtype': Category}

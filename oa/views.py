@@ -8,7 +8,7 @@ from bullhorn.models import Category, Event, Contact, Node
 from bullhorn.models import Tag, Alert
 from bullhorn.shortcuts import process_form, categories_for_forms
 from bullhorn.shortcuts import contact_from_user, get_query_string, edit_form
-from bullhorn.shortcuts import get_page_type_from_url
+from bullhorn.shortcuts import get_page_type_from_url, import_form
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -40,7 +40,7 @@ def model(request):
 
 def edit_model(request, model_id):
     page_type, model = get_page_type_from_url(request.path)
-    form = globals()['%sForm' % model.__name__]
+    form = import_form('%sForm' % model.__name__)
     template = 'new_%s.html' % page_type
     template_variables = edit_form(request, model, form, model_id)
     if 'success_message' in template_variables:
@@ -64,7 +64,7 @@ def view_model(request, model_id):
 
 def add_model(request):
     page_type, model = get_page_type_from_url(request.path)
-    form_type = globals()['%sForm' % model.__name__]
+    form_type = import_form('%sForm' % model.__name__)
     template_variables = process_form(request, form_type)
     template_variables['url'] = '/%s/add' % page_type
     template = 'new_%s.html' % page_type
